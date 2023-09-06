@@ -44,7 +44,7 @@ with st.sidebar:
     user_info = st.code("")
     user_info.code(user_info_format.format(**st.session_state["user"].__dict__))
     handler = st.session_state["agent"].callbacks[0]
-    log_block = st.markdown("**システムログ**\n" + "\n\n".join(handler.log))
+    log_block = st.markdown("**システムログ**  \n" + "\n\n".join(handler.log))
 
 
 for msg in st.session_state.messages:
