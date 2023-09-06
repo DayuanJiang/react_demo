@@ -8,14 +8,16 @@ st.title("💬 SoftDunk AIサービスセンター")
 st.markdown(
     """
 ツール：
-1. """
+1. データの使用量を調べるAPI
+2. データのクォータを調べるAPI
+3. データのクォータを上げるAPI"""
 )
 user_info_format = """
 仮ユーザー
 ユーザーID：{user_id}  
 請求予定額：{billing_amount}  
 データ使用量：{data_usage}  
-データクオリティ：{data_quota}  
+データクォータ：{data_quota}  
 """
 user_info = st.code("")
 
