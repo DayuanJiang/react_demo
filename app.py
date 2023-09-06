@@ -5,21 +5,22 @@ import os
 from src import creat_agent, user_dict
 
 st.title("💬 SoftDunk AIサービスセンター")
-st.markdown(
+with st.sidebar:
+    st.markdown(
+        """
+    AIアシスタントを持つツール：
+    1. データの使用量を調べるAPI
+    2. データのクォータを調べるAPI
+    3. データのクォータを上げるAPI"""
+    )
+    user_info_format = """
+    仮ユーザー
+    ユーザーID：{user_id}  
+    請求予定額：{billing_amount}  
+    データ使用量：{data_usage}  
+    データクォータ：{data_quota}  
     """
-ツール：
-1. データの使用量を調べるAPI
-2. データのクォータを調べるAPI
-3. データのクォータを上げるAPI"""
-)
-user_info_format = """
-仮ユーザー
-ユーザーID：{user_id}  
-請求予定額：{billing_amount}  
-データ使用量：{data_usage}  
-データクォータ：{data_quota}  
-"""
-user_info = st.code("")
+    user_info = st.code("")
 
 
 if "agent" not in st.session_state:
