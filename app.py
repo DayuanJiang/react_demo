@@ -4,6 +4,14 @@ import streamlit as st
 import os
 from src import creat_agent, user_dict
 
+user_info_format = """
+仮ユーザー
+ユーザーID：{user_id}  
+請求予定額：{billing_amount}  
+データ使用量：{data_usage}  
+データクォータ：{data_quota}  
+"""
+
 st.title("💬 SoftDunk AIサービスセンター")
 with st.sidebar:
     st.markdown(
@@ -11,15 +19,15 @@ with st.sidebar:
     AIアシスタントを持つツール：
     1. データの使用量を調べるAPI
     2. データのクォータを調べるAPI
-    3. データのクォータを上げるAPI"""
-    )
-    user_info_format = """
-    仮ユーザー
-    ユーザーID：{user_id}  
-    請求予定額：{billing_amount}  
-    データ使用量：{data_usage}  
-    データクォータ：{data_quota}  
+    3. データのクォータを上げるAPI
+    
+    会話の流れ：
+    データ使用量を知りたいです。
+    最近通信スピードがめちゃくちゃ遅くなったんですが、どうすればよろしいでしょうか。   
+    データクォータを10チャージしたい。
     """
+    )
+
     user_info = st.code("")
 
 
