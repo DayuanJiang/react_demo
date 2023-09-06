@@ -7,6 +7,16 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.chat_models import ChatOpenAI
 from langchain.agents import AgentExecutor
 from langchain.memory import ConversationBufferMemory
+from langchain.callbacks.base import BaseCallbackHandler
+
+
+class TraceCallbackHandler(BaseCallbackHandler):
+    def __init__(self):
+        self.log = []
+
+    def on_agent_action(self, action, color, **kwargs):
+        """Run on agent action."""
+        self.log.append(action.log.strip())
 
 
 class UserInfo:
@@ -41,7 +51,7 @@ def generate_user_info_randomly():
 
 @tool
 def get_user_data_usage(user_id) -> int:
-    """Returns the amount of data used by the user. if user_id is not in user_dict, return -1"""
+    """Returns the amount of data(データの使用量) used by the user. if user_id is not in user_dict, return -1"""
     try:
         return user_dict[user_id].data_usage
     except KeyError:
@@ -50,7 +60,7 @@ def get_user_data_usage(user_id) -> int:
 
 @tool
 def get_user_data_quota(user_id) -> int:
-    """Returns the data quota of the user. if user_id is not in user_dict, return -1"""
+    """Returns the data quota(データのクォータ) of the user. if user_id is not in user_dict, return -1"""
     try:
         return user_dict[user_id].data_quota
     except KeyError:
@@ -59,10 +69,12 @@ def get_user_data_quota(user_id) -> int:
 
 @tool
 def charge_user_data_quota(user_id: int, amount: int) -> int:
-    """Charges the data quota of the user. if user_id is not in user_dict, return -1"""
+    """Charges the data quota(データのクォータ) of the user.
+    if user_id is not in user_dict, return the quota after charging.
+    if user_id is not in user_dict, return -1"""
     try:
         user_dict[user_id].data_quota_charge(amount)
-        return 1
+        return user_dict[user_id].data_quota
     except KeyError:
         return -1
 
@@ -75,7 +87,7 @@ sys_content = """
 あなたは通信会社SoftDunkのAIアシスタントです。ユーザから質問に対して回答することが得意です。
 常識：
 1. 話を開始する前にユーザーIDを聞いてください。
-2. 通信量がクォータを超えるとスピードが遅くなる。
+2. ユーザーのデータの使用量がデータクォータを超えるとスピードが遅くなる。
 """
 system_message = SystemMessage(content=sys_content)
 MEMORY_KEY = "チャット履歴"
@@ -88,11 +100,12 @@ user_dict = {}
 
 
 def creat_agent():
+    handler = TraceCallbackHandler()
     user = generate_user_info_randomly()
     user_dict[user.user_id] = user
     memory = ConversationBufferMemory(memory_key=MEMORY_KEY, return_messages=True)
     agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
     agent_executor = AgentExecutor(
-        agent=agent, tools=tools, memory=memory, verbose=True
+        agent=agent, tools=tools, memory=memory, verbose=True, callbacks=[handler]
     )
     return agent_executor

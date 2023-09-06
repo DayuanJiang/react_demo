@@ -12,7 +12,18 @@ user_info_format = """
 データクォータ：{data_quota}  
 """
 
+
 st.title("💬 SoftDunk AIサービスセンター")
+
+
+if "agent" not in st.session_state:
+    st.session_state["agent"] = creat_agent()
+    st.session_state["messages"] = [
+        {"role": "assistant", "content": "こんにちは、SoftDunk AIサービスセンターです。"},
+    ]
+    st.session_state["user"] = user_dict[next(iter(user_dict))]
+
+
 with st.sidebar:
     st.markdown(
         """
@@ -27,17 +38,11 @@ with st.sidebar:
     データクォータを10チャージしたい。  
     """
     )
-
     user_info = st.code("")
-
-
-if "agent" not in st.session_state:
-    st.session_state["agent"] = creat_agent()
-    st.session_state["messages"] = [
-        {"role": "assistant", "content": "こんにちは、SoftDunk AIサービスセンターです。"},
-    ]
-    st.session_state["user"] = user_dict[next(iter(user_dict))]
     user_info.code(user_info_format.format(**st.session_state["user"].__dict__))
+    handler = st.session_state["agent"].callbacks[0]
+    log_block = st.markdown("**システムログ**\n" + "\n\n".join(handler.log))
+
 
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
@@ -50,3 +55,4 @@ if prompt := st.chat_input():
     st.session_state.messages.append({"role": "assistant", "content": response})
     st.chat_message("assistant").write(response)
     user_info.code(user_info_format.format(**st.session_state["user"].__dict__))
+    log_block.markdown("**システムログ**  \n" + "\n\n".join(handler.log))
