@@ -35,7 +35,6 @@ for msg in st.session_state.messages:
     user_info.code(user_info_format.format(**st.session_state["user"].__dict__))
 
 if prompt := st.chat_input():
-    openai.api_key = os.getenv("OPENAI_API_KEY")
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
     response = st.session_state.agent.run(prompt)

@@ -1,3 +1,14 @@
+import random
+import os
+from langchain.agents import tool
+from langchain.schema import SystemMessage
+from langchain.agents import OpenAIFunctionsAgent
+from langchain.prompts import MessagesPlaceholder
+from langchain.chat_models import ChatOpenAI
+from langchain.agents import AgentExecutor
+from langchain.memory import ConversationBufferMemory
+
+
 class UserInfo:
     def __init__(self, user_id, billing_amount, data_usage, data_quota):
         self.user_id = user_id
@@ -10,9 +21,6 @@ class UserInfo:
 
     def __repr__(self) -> str:
         return f"UserInfo(user_id={self.user_id}, billing_amount={self.billing_amount}, data_usage={self.data_usage}, data_quota={self.data_quota})"
-
-
-import random
 
 
 def generate_user_info_randomly():
@@ -29,12 +37,6 @@ def generate_user_info_randomly():
         data_usage=7,
         data_quota=3,
     )
-
-
-from langchain.agents import tool
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 @tool
@@ -66,13 +68,6 @@ def charge_user_data_quota(user_id: int, amount: int) -> int:
 
 
 tools = [get_user_data_usage, get_user_data_quota, charge_user_data_quota]
-
-from langchain.schema import SystemMessage
-from langchain.agents import OpenAIFunctionsAgent
-from langchain.prompts import MessagesPlaceholder
-from langchain.chat_models import ChatOpenAI
-from langchain.agents import AgentExecutor
-from langchain.memory import ConversationBufferMemory
 
 
 llm = ChatOpenAI(temperature=0)
