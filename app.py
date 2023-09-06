@@ -5,6 +5,11 @@ import os
 from src import creat_agent, user_dict
 
 st.title("💬 SoftDunk AIサービスセンター")
+st.markdown(
+    """
+ツール：
+1. """
+)
 user_info_format = """
 仮ユーザー
 ユーザーID：{user_id}  
